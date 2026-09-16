@@ -7,7 +7,6 @@ import { PageHeader } from "../components/PageHeader";
 import { QueueRow } from "../components/QueueRow";
 import { api } from "../lib/api";
 import { useApp } from "../store/app";
-import { pageTransition } from "../motion/tokens";
 import type { JobStatus } from "../types";
 
 export default function Queue() {
@@ -68,7 +67,7 @@ export default function Queue() {
   }
 
   return (
-    <motion.section {...pageTransition} className="max-w-4xl">
+    <section className="max-w-4xl">
       <PageHeader title="Queue" description="Downloads run locally, in the order you set.">
         <button className="btn btn-ghost btn-sm gap-2" onClick={() => void openFolder()}>
           <FolderOpen size={14} />
@@ -140,16 +139,18 @@ export default function Queue() {
       <div className="mt-5 space-y-2">
         <AnimatePresence initial={false}>
           {queue.length === 0 ? (
-            <EmptyState
-              icon={ListVideo}
-              title="Queue is empty"
-              body="Preview a YouTube link on Home, pick a format, then add it here."
-              action={
-                <Link to="/" className="btn btn-primary rounded-2xl">
-                  Go to Home
-                </Link>
-              }
-            />
+            <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <EmptyState
+                icon={ListVideo}
+                title="Queue is empty"
+                body="Preview a YouTube link on Home, pick a format, then add it here."
+                action={
+                  <Link to="/" className="btn btn-primary rounded-2xl">
+                    Go to Home
+                  </Link>
+                }
+              />
+            </motion.div>
           ) : (
             queue.map((job, index) => (
               <QueueRow
@@ -164,6 +165,6 @@ export default function Queue() {
           )}
         </AnimatePresence>
       </div>
-    </motion.section>
+    </section>
   );
 }

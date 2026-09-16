@@ -30,11 +30,14 @@ export function extractYoutubeUrl(text: string) {
 
 export function extractYoutubeUrlFromDrop(data: DataTransfer | null) {
   if (!data) return null;
-  const raw =
-    data.getData("text/uri-list") ||
-    data.getData("text/plain") ||
-    data.getData("text") ||
-    "";
+  const raw = [
+    data.getData("text/uri-list"),
+    data.getData("text/plain"),
+    data.getData("text"),
+    data.getData("text/html"),
+  ]
+    .filter(Boolean)
+    .join("\n");
   return extractYoutubeUrl(raw);
 }
 

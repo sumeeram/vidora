@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
 import { FolderOpen, Library as LibraryIcon, Search, Trash2 } from "lucide-react";
 import { EmptyState } from "../components/EmptyState";
 import { MediaRow } from "../components/MediaRow";
@@ -8,7 +7,6 @@ import { PageHeader } from "../components/PageHeader";
 import { api } from "../lib/api";
 import { matchesDateFilter, type DateFilter } from "../lib/format";
 import { useApp } from "../store/app";
-import { pageTransition } from "../motion/tokens";
 
 export default function Library() {
   const history = useApp((s) => s.history);
@@ -71,7 +69,7 @@ export default function Library() {
   }
 
   return (
-    <motion.section {...pageTransition} className="max-w-4xl">
+    <section className="max-w-4xl">
       <PageHeader title="Library" description="Everything already saved on this machine.">
         <button className="btn btn-ghost btn-sm gap-2" onClick={() => void openFolder()}>
           <FolderOpen size={14} />
@@ -87,8 +85,8 @@ export default function Library() {
         </button>
       </PageHeader>
 
-      <div className="mt-6 flex flex-wrap items-center gap-2">
-        <label className="input glass min-w-[220px] flex-1 items-center gap-2 border-0">
+      <div className="mt-6 flex flex-col gap-3">
+        <label className="input glass w-full items-center gap-2 border-0">
           <Search size={16} className="opacity-50" />
           <input
             placeholder="Search titles, channels, or URLs"
@@ -97,43 +95,45 @@ export default function Library() {
             aria-label="Search library"
           />
         </label>
-        <select
-          className="select select-sm bg-base-100/40"
-          value={format}
-          onChange={(e) => setFormat(e.target.value)}
-          aria-label="Filter by format"
-        >
-          <option value="all">All formats</option>
-          {formats.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <select
-          className="select select-sm bg-base-100/40 max-w-[180px]"
-          value={channel}
-          onChange={(e) => setChannel(e.target.value)}
-          aria-label="Filter by channel"
-        >
-          <option value="all">All channels</option>
-          {channels.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <select
-          className="select select-sm bg-base-100/40"
-          value={date}
-          onChange={(e) => setDate(e.target.value as DateFilter)}
-          aria-label="Filter by date"
-        >
-          <option value="all">All time</option>
-          <option value="today">Today</option>
-          <option value="week">Past week</option>
-          <option value="month">Past month</option>
-        </select>
+        <div className="flex flex-wrap gap-2">
+          <select
+            className="select select-sm bg-base-100/40"
+            value={format}
+            onChange={(e) => setFormat(e.target.value)}
+            aria-label="Filter by format"
+          >
+            <option value="all">All formats</option>
+            {formats.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+          <select
+            className="select select-sm bg-base-100/40 max-w-[180px]"
+            value={channel}
+            onChange={(e) => setChannel(e.target.value)}
+            aria-label="Filter by channel"
+          >
+            <option value="all">All channels</option>
+            {channels.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+          <select
+            className="select select-sm bg-base-100/40"
+            value={date}
+            onChange={(e) => setDate(e.target.value as DateFilter)}
+            aria-label="Filter by date"
+          >
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="week">Past week</option>
+            <option value="month">Past month</option>
+          </select>
+        </div>
       </div>
 
       <div className="mt-5 space-y-2">
@@ -191,6 +191,6 @@ export default function Library() {
           {filtersActive ? " matching filters" : ""}
         </p>
       ) : null}
-    </motion.section>
+    </section>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "motion/react";
 import { FolderOpen, TriangleAlert } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { EmptyState } from "../components/EmptyState";
@@ -7,7 +6,6 @@ import { PageHeader } from "../components/PageHeader";
 import { api } from "../lib/api";
 import { useApp } from "../store/app";
 import { useTheme } from "../store/theme";
-import { pageTransition } from "../motion/tokens";
 import type { Settings } from "../types";
 
 export default function SettingsPage() {
@@ -58,7 +56,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <motion.section {...pageTransition} className="max-w-2xl space-y-6">
+    <section className="max-w-2xl space-y-6">
       <PageHeader title="Settings" description="Keep Vidora quiet, fast, and in the right folder." />
 
       {sidecar && !sidecar.ready ? (
@@ -70,11 +68,11 @@ export default function SettingsPage() {
         />
       ) : null}
 
-      <div className="glass rounded-box space-y-5 p-5">
+      <div className="glass rounded-box flex flex-col gap-5 p-5">
         <p className="font-display">Downloads</p>
-        <label className="form-control">
-          <span className="label-text mb-2">Output folder</span>
-          <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2">
+          <span className="text-sm">Output folder</span>
+          <div className="flex w-full flex-wrap gap-2">
             <input className="input input-bordered min-w-0 flex-1" value={settings.outputDir} readOnly />
             <button className="btn" onClick={() => void pickFolder()}>
               Browse
@@ -84,41 +82,41 @@ export default function SettingsPage() {
               Open
             </button>
           </div>
-        </label>
+        </div>
 
-        <label className="form-control">
-          <span className="label-text mb-2">Concurrent downloads ({settings.concurrency})</span>
+        <div className="flex w-full flex-col gap-2">
+          <span className="text-sm">Concurrent downloads ({settings.concurrency})</span>
           <input
             type="range"
             min={1}
             max={4}
             value={settings.concurrency}
-            className="range range-primary"
+            className="range range-primary w-full"
             onChange={(e) => void patch({ concurrency: Number(e.target.value) })}
           />
-        </label>
+        </div>
 
-        <label className="form-control">
-          <span className="label-text mb-2">Speed limit</span>
+        <div className="flex w-full flex-col gap-2">
+          <span className="text-sm">Speed limit</span>
           <input
-            className="input input-bordered"
+            className="input input-bordered w-full"
             placeholder="2M"
             value={settings.rateLimit}
             onChange={(e) => void patch({ rateLimit: e.target.value })}
           />
-        </label>
+        </div>
 
-        <label className="form-control">
-          <span className="label-text mb-2">Filename template</span>
+        <div className="flex w-full flex-col gap-2">
+          <span className="text-sm">Filename template</span>
           <input
-            className="input input-bordered font-mono text-sm"
+            className="input input-bordered w-full font-mono text-sm"
             value={settings.filenameTemplate}
             onChange={(e) => void patch({ filenameTemplate: e.target.value })}
           />
-        </label>
+        </div>
       </div>
 
-      <div className="glass rounded-box space-y-3 p-5">
+      <div className="glass rounded-box flex flex-col gap-3 p-5">
         <p className="font-display">Clipboard & defaults</p>
         <Toggle
           label="Watch clipboard for YouTube links"
@@ -160,7 +158,7 @@ export default function SettingsPage() {
         </button>
         {updateLog ? <pre className="mt-3 whitespace-pre-wrap text-xs opacity-70">{updateLog}</pre> : null}
       </div>
-    </motion.section>
+    </section>
   );
 }
 
@@ -174,14 +172,14 @@ function Toggle({
   onChange: (value: boolean) => void;
 }) {
   return (
-    <label className="label cursor-pointer justify-start gap-3">
+    <label className="flex w-full cursor-pointer items-center gap-3">
       <input
         type="checkbox"
         className="toggle toggle-primary"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="label-text">{label}</span>
+      <span className="text-sm">{label}</span>
     </label>
   );
 }

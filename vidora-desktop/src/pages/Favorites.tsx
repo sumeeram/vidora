@@ -1,12 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
 import { Star } from "lucide-react";
 import { EmptyState } from "../components/EmptyState";
 import { MediaCard } from "../components/MediaCard";
 import { PageHeader } from "../components/PageHeader";
 import { api } from "../lib/api";
 import { useApp } from "../store/app";
-import { pageTransition } from "../motion/tokens";
 
 export default function Favorites() {
   const favorites = useApp((s) => s.favorites);
@@ -14,10 +12,10 @@ export default function Favorites() {
   const navigate = useNavigate();
 
   return (
-    <motion.section {...pageTransition} className="max-w-6xl">
+    <section className="max-w-6xl">
       <PageHeader
         title="Favorites"
-        description="Keep the videos you want to return to. Opening one fills Home so you can preview and queue it again."
+        description="Star a video from Home or Library to keep the link handy."
       />
       {favorites.length === 0 ? (
         <EmptyState
@@ -59,6 +57,6 @@ export default function Favorites() {
           ))}
         </div>
       )}
-    </motion.section>
+    </section>
   );
 }
