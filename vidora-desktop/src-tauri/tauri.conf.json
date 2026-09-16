@@ -28,6 +28,12 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Vidora",
+    "shortDescription": "Local-first YouTube downloader",
+    "longDescription": "Vidora is a local-first YouTube downloader for Windows.",
+    "copyright": "Copyright (c) Vidora",
+    "category": "Video",
+    "homepage": "https://github.com/sumeeram/vidora",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -35,7 +41,23 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "externalBin": ["binaries/yt-dlp", "binaries/ffmpeg", "binaries/ffprobe"]
+    "externalBin": ["binaries/yt-dlp", "binaries/ffmpeg", "binaries/ffprobe"],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "installer/installer.ico",
+        "uninstallerIcon": "installer/installer.ico",
+        "headerImage": "installer/header.bmp",
+        "sidebarImage": "installer/sidebar.bmp",
+        "uninstallerHeaderImage": "installer/header.bmp",
+        "installerHooks": "installer/hooks.nsh",
+        "languages": ["English"]
+      },
+      "wix": {
+        "bannerPath": "installer/wix-banner.bmp",
+        "dialogImagePath": "installer/wix-dialog.bmp"
+      }
+    }
   },
   "plugins": {
     "updater": {
