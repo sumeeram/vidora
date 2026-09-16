@@ -5,6 +5,7 @@ import {
   requestPermission,
 } from "@tauri-apps/plugin-notification";
 import { api } from "../lib/api";
+import { checkForAppUpdate, installAppUpdate } from "../lib/updater";
 import { applyBrowserDemo, shouldLoadBrowserDemo } from "../lib/demoPreview";
 import { useApp } from "../store/app";
 import { useTheme } from "../store/theme";
@@ -53,6 +54,29 @@ export function useAppBootstrap() {
       unlistenHistory = await listen("history:update", async () => {
         setHistory(await api.getHistory());
       });
+
+      if (!import.meta.env.DEV) {
+        try {
+          const update = await checkForAppUpdate();
+          if (update) {
+            useApp.getState().pushToast({
+              title: `Vidora ${update.version} is available`,
+              body: "Install now, or check Settings later.",
+              actionLabel: "Install",
+              onAction: () => {
+                void installAppUpdate(update).catch((err) => {
+                  useApp.getState().pushToast({
+                    title: "Update failed",
+                    body: String(err),
+                  });
+                });
+              },
+            });
+          }
+        } catch (err) {
+          console.warn("Launch update check skipped", err);
+        }
+      }
     }
 
     void boot().catch((err) => {

@@ -17,6 +17,9 @@ src-tauri/binaries/*
 src-tauri/target
 src-tauri/gen
 
+# Updater signing private keys — never commit
+*.key
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
