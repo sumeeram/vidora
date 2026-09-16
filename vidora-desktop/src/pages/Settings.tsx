@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { FolderOpen, TriangleAlert } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
+import { EmptyState } from "../components/EmptyState";
+import { PageHeader } from "../components/PageHeader";
 import { api } from "../lib/api";
 import { useApp } from "../store/app";
 import { useTheme } from "../store/theme";
@@ -31,6 +34,14 @@ export default function SettingsPage() {
     }
   }
 
+  async function openFolder() {
+    try {
+      await api.openDownloadFolder(settings.outputDir);
+    } catch (err) {
+      pushToast({ title: "Could not open folder", body: String(err) });
+    }
+  }
+
   async function updateEngine() {
     setBusy(true);
     try {
@@ -47,54 +58,68 @@ export default function SettingsPage() {
   }
 
   return (
-    <motion.section {...pageTransition} className="max-w-2xl space-y-8">
-      <div>
-        <h1 className="font-display text-4xl">Settings</h1>
-        <p className="mt-2 opacity-60">Keep Vidora quiet, fast, and in the right folder.</p>
+    <motion.section {...pageTransition} className="max-w-2xl space-y-6">
+      <PageHeader title="Settings" description="Keep Vidora quiet, fast, and in the right folder." />
+
+      {sidecar && !sidecar.ready ? (
+        <EmptyState
+          tone="warning"
+          icon={TriangleAlert}
+          title="Engine not ready"
+          body={sidecar.message}
+        />
+      ) : null}
+
+      <div className="glass rounded-box space-y-5 p-5">
+        <p className="font-display">Downloads</p>
+        <label className="form-control">
+          <span className="label-text mb-2">Output folder</span>
+          <div className="flex flex-wrap gap-2">
+            <input className="input input-bordered min-w-0 flex-1" value={settings.outputDir} readOnly />
+            <button className="btn" onClick={() => void pickFolder()}>
+              Browse
+            </button>
+            <button className="btn btn-ghost gap-2" onClick={() => void openFolder()}>
+              <FolderOpen size={16} />
+              Open
+            </button>
+          </div>
+        </label>
+
+        <label className="form-control">
+          <span className="label-text mb-2">Concurrent downloads ({settings.concurrency})</span>
+          <input
+            type="range"
+            min={1}
+            max={4}
+            value={settings.concurrency}
+            className="range range-primary"
+            onChange={(e) => void patch({ concurrency: Number(e.target.value) })}
+          />
+        </label>
+
+        <label className="form-control">
+          <span className="label-text mb-2">Speed limit</span>
+          <input
+            className="input input-bordered"
+            placeholder="2M"
+            value={settings.rateLimit}
+            onChange={(e) => void patch({ rateLimit: e.target.value })}
+          />
+        </label>
+
+        <label className="form-control">
+          <span className="label-text mb-2">Filename template</span>
+          <input
+            className="input input-bordered font-mono text-sm"
+            value={settings.filenameTemplate}
+            onChange={(e) => void patch({ filenameTemplate: e.target.value })}
+          />
+        </label>
       </div>
 
-      <label className="form-control">
-        <span className="label-text mb-2">Output folder</span>
-        <div className="flex gap-2">
-          <input className="input input-bordered flex-1" value={settings.outputDir} readOnly />
-          <button className="btn" onClick={() => void pickFolder()}>
-            Browse
-          </button>
-        </div>
-      </label>
-
-      <label className="form-control">
-        <span className="label-text mb-2">Concurrent downloads ({settings.concurrency})</span>
-        <input
-          type="range"
-          min={1}
-          max={4}
-          value={settings.concurrency}
-          className="range range-primary"
-          onChange={(e) => void patch({ concurrency: Number(e.target.value) })}
-        />
-      </label>
-
-      <label className="form-control">
-        <span className="label-text mb-2">Speed limit</span>
-        <input
-          className="input input-bordered"
-          placeholder="2M"
-          value={settings.rateLimit}
-          onChange={(e) => void patch({ rateLimit: e.target.value })}
-        />
-      </label>
-
-      <label className="form-control">
-        <span className="label-text mb-2">Filename template</span>
-        <input
-          className="input input-bordered font-mono text-sm"
-          value={settings.filenameTemplate}
-          onChange={(e) => void patch({ filenameTemplate: e.target.value })}
-        />
-      </label>
-
-      <div className="grid gap-3">
+      <div className="glass rounded-box space-y-3 p-5">
+        <p className="font-display">Clipboard & defaults</p>
         <Toggle
           label="Watch clipboard for YouTube links"
           checked={settings.clipboardWatch}
@@ -129,11 +154,11 @@ export default function SettingsPage() {
 
       <div className="glass rounded-box p-5">
         <p className="font-display">yt-dlp engine</p>
-        <p className="text-sm opacity-60 mt-1">{sidecar?.message ?? "Checking…"}</p>
+        <p className="mt-1 text-sm opacity-60">{sidecar?.message ?? "Checking…"}</p>
         <button className="btn btn-primary btn-sm mt-4" disabled={busy} onClick={() => void updateEngine()}>
           {busy ? <span className="loading loading-spinner loading-xs" /> : "Update yt-dlp"}
         </button>
-        {updateLog ? <pre className="mt-3 text-xs opacity-70 whitespace-pre-wrap">{updateLog}</pre> : null}
+        {updateLog ? <pre className="mt-3 whitespace-pre-wrap text-xs opacity-70">{updateLog}</pre> : null}
       </div>
     </motion.section>
   );

@@ -81,7 +81,7 @@ export function Shell() {
             </motion.button>
           </div>
         </aside>
-        <main className="relative min-w-0 flex-1 overflow-y-auto p-8">
+        <main className="relative min-w-0 flex-1 overflow-y-auto px-8 py-7">
           <Outlet />
         </main>
       </div>

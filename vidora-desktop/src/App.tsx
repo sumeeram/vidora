@@ -14,7 +14,13 @@ function AnimatedRoutes() {
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location.pathname} className="min-h-full">
-        <Suspense fallback={<div className="loading loading-ring loading-lg mt-20 mx-auto block" />}>
+        <Suspense
+          fallback={
+            <div className="flex min-h-[40vh] items-center justify-center">
+              <span className="loading loading-ring loading-lg" />
+            </div>
+          }
+        >
           <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/queue" element={<Queue />} />

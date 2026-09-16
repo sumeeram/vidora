@@ -11,7 +11,7 @@ export function FormatPicker({
   onChange: (format: FormatSpec) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2" role="group" aria-label="Format presets">
       {FORMAT_PRESETS.map((preset) => {
         const active = value.id === preset.id;
         return (

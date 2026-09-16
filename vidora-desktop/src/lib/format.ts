@@ -27,3 +27,40 @@ export function extractYoutubeUrl(text: string) {
   const match = text.match(YOUTUBE_RE);
   return match?.[0]?.replace(/[),.;]+$/, "") ?? null;
 }
+
+export function extractYoutubeUrlFromDrop(data: DataTransfer | null) {
+  if (!data) return null;
+  const raw =
+    data.getData("text/uri-list") ||
+    data.getData("text/plain") ||
+    data.getData("text") ||
+    "";
+  return extractYoutubeUrl(raw);
+}
+
+export function formatDate(iso?: string | null) {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export type DateFilter = "all" | "today" | "week" | "month";
+
+export function matchesDateFilter(iso: string | null | undefined, filter: DateFilter) {
+  if (filter === "all" || !iso) return filter === "all";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return false;
+  const now = Date.now();
+  if (filter === "today") {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    return date.getTime() >= start.getTime();
+  }
+  const days = filter === "week" ? 7 : 30;
+  return now - date.getTime() <= days * 86_400_000;
+}

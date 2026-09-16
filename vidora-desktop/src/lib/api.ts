@@ -50,4 +50,9 @@ export const api = {
   updateYtdlp: () => invoke<string>("update_ytdlp"),
   revealPath: (path: string) => invoke<void>("reveal_path", { path }),
   openPath: (path: string) => invoke<void>("open_path", { path }),
+  defaultFolder: () => invoke<string>("default_folder"),
+  openDownloadFolder: async (dir?: string | null) => {
+    const path = dir?.trim() || (await invoke<string>("default_folder"));
+    return invoke<void>("open_path", { path });
+  },
 };
