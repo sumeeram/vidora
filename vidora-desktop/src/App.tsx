@@ -1,29 +1,31 @@
-import { lazy, Suspense } from "react";
 import { HashRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Shell } from "./components/Shell";
-
-const Home = lazy(() => import("./pages/Home"));
-const Queue = lazy(() => import("./pages/Queue"));
-const Library = lazy(() => import("./pages/Library"));
-const Favorites = lazy(() => import("./pages/Favorites"));
-const Settings = lazy(() => import("./pages/Settings"));
+import Home from "./pages/Home";
+import Queue from "./pages/Queue";
+import Library from "./pages/Library";
+import Favorites from "./pages/Favorites";
+import Settings from "./pages/Settings";
 
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} className="min-h-full">
-        <Suspense fallback={<div className="loading loading-ring loading-lg mt-20 mx-auto block" />}>
-          <Routes location={location}>
-            <Route path="/" element={<Home />} />
-            <Route path="/queue" element={<Queue />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        className="min-h-full"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.18 } }}
+        exit={{ opacity: 0, y: -6, transition: { duration: 0.12 } }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/queue" element={<Queue />} />
+          <Route path="/library" element={<Library />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </motion.div>
     </AnimatePresence>
   );

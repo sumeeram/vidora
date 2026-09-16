@@ -5,6 +5,7 @@ import {
   requestPermission,
 } from "@tauri-apps/plugin-notification";
 import { api } from "../lib/api";
+import { applyBrowserDemo, shouldLoadBrowserDemo } from "../lib/demoPreview";
 import { useApp } from "../store/app";
 import { useTheme } from "../store/theme";
 import type { Job } from "../types";
@@ -21,6 +22,11 @@ export function useAppBootstrap() {
     let unlistenHistory: (() => void) | undefined;
 
     async function boot() {
+      if (shouldLoadBrowserDemo()) {
+        applyBrowserDemo();
+        return;
+      }
+
       const [settings, sidecar, queue, history, favorites] = await Promise.all([
         api.getSettings(),
         api.sidecarStatus(),
