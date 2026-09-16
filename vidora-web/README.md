@@ -1,6 +1,6 @@
 # Vidora website
 
-Marketing site for the Vidora Windows downloader. Deployed on Vercel. The installer is **not** hosted here — it lives on GitHub Releases.
+Marketing site for the Vidora Windows downloader. Deployed on Vercel. The installer is **not** hosted here — it lives on [GitHub Releases](https://github.com/sumeeram/vidora/releases/latest).
 
 ## Local
 
@@ -10,25 +10,28 @@ npm install
 npm run dev
 ```
 
-Copy `.env.example` to `.env` and set the installer URL when you have a release:
+Copy `.env.example` to `.env` if you want to override the download URL:
 
 ```
-VITE_DOWNLOAD_URL=https://github.com/YOUR_USER/YOUR_REPO/releases/latest/download/Vidora_0.1.0_x64-setup.exe
+VITE_DOWNLOAD_URL=https://github.com/sumeeram/vidora/releases/latest
 ```
 
-If the env var is empty, the Download button shows “Installer coming soon”.
+That default is also baked in when the env var is unset, so the Download button always points at the latest GitHub Release page. After the first `v*` tag, you can optionally switch the env var to a direct NSIS asset URL (the filename includes the version and changes every release):
+
+```
+VITE_DOWNLOAD_URL=https://github.com/sumeeram/vidora/releases/latest/download/Vidora_0.1.0_x64-setup.exe
+```
 
 ## Publish the Windows installer
 
-From the desktop app folder:
+Push a version tag from the repo root after bumping `vidora-desktop` versions (see `vidora-desktop/README.md`):
 
 ```bash
-cd vidora
-npm run setup
-npm run tauri build
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
-Upload the NSIS/MSI from `vidora/src-tauri/target/release/bundle/` to a GitHub Release. Copy that asset URL into `VITE_DOWNLOAD_URL`.
+GitHub Actions builds the NSIS/MSI on `windows-latest` and attaches them to the GitHub Release. No manual upload is required.
 
 ## Deploy on Vercel
 
@@ -36,5 +39,5 @@ Upload the NSIS/MSI from `vidora/src-tauri/target/release/bundle/` to a GitHub R
 2. Import the project in Vercel.
 3. Set **Root Directory** to `vidora-web` if the repo contains more than this site.
 4. Framework: Vite. Build: `npm run build`. Output: `dist`.
-5. Add environment variable `VITE_DOWNLOAD_URL` (after the first release).
+5. Optional: set `VITE_DOWNLOAD_URL` if you do not want the built-in GitHub Releases URL.
 6. Deploy. After changing the env var, redeploy so Vite can bake it into the build.

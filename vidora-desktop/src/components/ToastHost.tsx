@@ -9,9 +9,9 @@ export function ToastHost() {
 
   useEffect(() => {
     if (!toasts.length) return;
-    const timers = toasts.map((toast) =>
-      window.setTimeout(() => dismiss(toast.id), 5600),
-    );
+    const timers = toasts
+      .filter((toast) => !toast.actionLabel)
+      .map((toast) => window.setTimeout(() => dismiss(toast.id), 5600));
     return () => timers.forEach((id) => window.clearTimeout(id));
   }, [toasts, dismiss]);
 

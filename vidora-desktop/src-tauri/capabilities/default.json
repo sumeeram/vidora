@@ -12,6 +12,8 @@
     "clipboard-manager:allow-read-text",
     "notification:default",
     "fs:default",
+    "updater:default",
+    "process:default",
     {
       "identifier": "shell:allow-spawn",
       "allow": [

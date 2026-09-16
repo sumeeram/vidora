@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify tag matches app version
+        if: github.ref_type == 'tag'
+        working-directory: vidora-desktop
+        shell: pwsh
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          if ($tag -notmatch '^v\d+\.\d+\.\d+') {
+            throw "Tag '$tag' must look like v0.2.0"
+          }
+          $expected = $tag.Substring(1)
+          $pkg = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $tauri = (Get-Content src-tauri/tauri.conf.json -Raw | ConvertFrom-Json).version
+          $cargoLine = Select-String -Path src-tauri/Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"' | Select-Object -First 1
+          $cargo = $cargoLine.Matches[0].Groups[1].Value
+          if ($pkg -ne $expected) { throw "package.json version $pkg does not match tag $tag" }
+          if ($tauri -ne $expected) { throw "tauri.conf.json version $tauri does not match tag $tag" }
+          if ($cargo -ne $expected) { throw "Cargo.toml version $cargo does not match tag $tag" }
+          Write-Host "Version $expected matches $tag"
+
+      - name: Require updater signing key
+        shell: pwsh
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) {
+            throw "Missing secret TAURI_SIGNING_PRIVATE_KEY. Generate keys with ``npx tauri signer generate`` and add the private key as a repository secret. See vidora-desktop/README.md."
+          }
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: vidora-desktop/package-lock.json
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: vidora-desktop/src-tauri -> target
+
+      - name: Install frontend dependencies
+        working-directory: vidora-desktop
+        run: npm ci
+
+      - name: Download yt-dlp and ffmpeg sidecars
+        working-directory: vidora-desktop
+        run: npm run setup
+
+      - name: Build Windows installers and publish GitHub Release
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          projectPath: vidora-desktop
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          releaseName: Vidora ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+          releaseBody: |
+            Windows installers for Vidora.
+
+            - Recommended: the NSIS `*-setup.exe`
+            - Alternative: the `.msi`
+            - In-app updates use `latest.json` from this release
+          releaseDraft: false
+          prerelease: false
+          generateReleaseNotes: true
+          uploadUpdaterJson: true
+          updaterJsonPreferNsis: true
+          uploadWorkflowArtifacts: true
+          # Enable updater artifacts in CI only so local unsigned `tauri build` still works.
+          args: --config src-tauri/tauri.ci.conf.json

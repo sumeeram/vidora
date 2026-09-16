@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { api } from "../lib/api";
+import {
+  checkForAppUpdate,
+  getAppVersion,
+  installAppUpdate,
+  type Update,
+} from "../lib/updater";
 import { useApp } from "../store/app";
 import { useTheme } from "../store/theme";
 import { pageTransition } from "../motion/tokens";
@@ -15,6 +21,19 @@ export default function SettingsPage() {
   const setTheme = useTheme((s) => s.setTheme);
   const [busy, setBusy] = useState(false);
   const [updateLog, setUpdateLog] = useState("");
+  const [appVersion, setAppVersion] = useState<string | null>(null);
+  const [appUpdate, setAppUpdate] = useState<Update | null>(null);
+  const [appUpdateBusy, setAppUpdateBusy] = useState(false);
+  const [appUpdateMessage, setAppUpdateMessage] = useState(
+    "Vidora can install newer GitHub Releases automatically.",
+  );
+  const [appUpdateProgress, setAppUpdateProgress] = useState<number | null>(null);
+
+  useEffect(() => {
+    void getAppVersion().then((version) => {
+      if (version) setAppVersion(version);
+    });
+  }, []);
 
   async function patch(next: Partial<Settings>) {
     const saved = await api.saveSettings({ ...settings, ...next });
@@ -43,6 +62,45 @@ export default function SettingsPage() {
       pushToast({ title: "Update failed", body: String(err) });
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function checkAppUpdate() {
+    setAppUpdateBusy(true);
+    setAppUpdate(null);
+    setAppUpdateProgress(null);
+    setAppUpdateMessage("Checking GitHub Releases…");
+    try {
+      const update = await checkForAppUpdate();
+      setAppUpdate(update);
+      if (update) {
+        setAppUpdateMessage(`Version ${update.version} is ready to install.`);
+        pushToast({ title: `Vidora ${update.version} is available` });
+      } else {
+        setAppUpdateMessage("You are on the latest version.");
+        pushToast({ title: "Vidora is up to date" });
+      }
+    } catch (err) {
+      setAppUpdate(null);
+      setAppUpdateMessage(String(err));
+      pushToast({ title: "Update check failed", body: String(err) });
+    } finally {
+      setAppUpdateBusy(false);
+    }
+  }
+
+  async function installApp() {
+    if (!appUpdate) return;
+    setAppUpdateBusy(true);
+    setAppUpdateMessage("Downloading update… Vidora will restart when it is ready.");
+    try {
+      await installAppUpdate(appUpdate, (progress) => {
+        setAppUpdateProgress(progress.percent);
+      });
+    } catch (err) {
+      setAppUpdateMessage(String(err));
+      pushToast({ title: "Update failed", body: String(err) });
+      setAppUpdateBusy(false);
     }
   }
 
@@ -125,6 +183,47 @@ export default function SettingsPage() {
           checked={settings.writeAutoSubs}
           onChange={(writeAutoSubs) => void patch({ writeAutoSubs })}
         />
+      </div>
+
+      <div className="glass rounded-box p-5">
+        <p className="font-display">App updates</p>
+        <p className="text-sm opacity-60 mt-1">
+          {appVersion ? `Current version ${appVersion}. ` : null}
+          {appUpdateMessage}
+        </p>
+        {appUpdateProgress != null ? (
+          <progress
+            className="progress progress-primary mt-3"
+            value={appUpdateProgress}
+            max={100}
+          />
+        ) : null}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            className="btn btn-sm"
+            disabled={appUpdateBusy}
+            onClick={() => void checkAppUpdate()}
+          >
+            {appUpdateBusy && !appUpdate ? (
+              <span className="loading loading-spinner loading-xs" />
+            ) : (
+              "Check for updates"
+            )}
+          </button>
+          {appUpdate ? (
+            <button
+              className="btn btn-primary btn-sm"
+              disabled={appUpdateBusy}
+              onClick={() => void installApp()}
+            >
+              {appUpdateBusy ? (
+                <span className="loading loading-spinner loading-xs" />
+              ) : (
+                `Install ${appUpdate.version}`
+              )}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <div className="glass rounded-box p-5">
