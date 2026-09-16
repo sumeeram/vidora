@@ -71,9 +71,14 @@ export function Shell() {
               onClick={() => {
                 toggle();
                 const next = useTheme.getState().theme;
-                void api.saveSettings({ ...useApp.getState().settings, theme: next }).then((saved) => {
-                  useApp.getState().setSettings(saved);
-                });
+                void api
+                  .saveSettings({ ...useApp.getState().settings, theme: next })
+                  .then((saved) => {
+                    useApp.getState().setSettings(saved);
+                  })
+                  .catch(() => {
+                    // Theme still applies locally if settings cannot be persisted.
+                  });
               }}
             >
               {theme === "vidora-dark" ? <Sun size={18} /> : <Moon size={18} />}
@@ -81,7 +86,7 @@ export function Shell() {
             </motion.button>
           </div>
         </aside>
-        <main className="relative min-w-0 flex-1 overflow-y-auto p-8">
+        <main className="relative min-w-0 flex-1 overflow-y-auto px-8 py-7">
           <Outlet />
         </main>
       </div>

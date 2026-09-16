@@ -84,6 +84,24 @@
   --glow-soft: color-mix(in oklab, var(--color-secondary) 22%, transparent);
 }
 
+[data-theme="vidora-light"] {
+  --surface-glass: color-mix(in oklab, var(--color-base-100) 86%, white);
+  --surface-stroke: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+}
+
+[data-theme="vidora-light"] .glass {
+  box-shadow:
+    0 16px 36px -28px color-mix(in oklab, black 28%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 78%, transparent);
+}
+
+[data-theme="vidora-light"] .ambient-root {
+  background:
+    radial-gradient(ellipse 80% 55% at 12% -10%, color-mix(in oklab, var(--color-primary) 18%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 100% 0%, color-mix(in oklab, var(--color-secondary) 12%, transparent), transparent 50%),
+    linear-gradient(180deg, var(--color-base-200), var(--color-base-100));
+}
+
 html,
 body,
 #root {
@@ -122,6 +140,12 @@ body {
 
 .thumb-treatment {
   filter: saturate(1.08) contrast(1.04);
+}
+
+.drop-overlay {
+  background: color-mix(in oklab, var(--color-primary) 12%, var(--surface-glass));
+  border: 2px dashed color-mix(in oklab, var(--color-primary) 70%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 ::-webkit-scrollbar {
