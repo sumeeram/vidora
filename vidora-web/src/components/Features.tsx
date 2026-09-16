@@ -1,6 +1,6 @@
 import { Clipboard, Clapperboard, FolderLock, ListVideo, MoonStar, Music } from "lucide-react";
 import { motion } from "motion/react";
-import { inView, item, springs, stagger, staggerFast } from "../motion/tokens";
+import { inView, item, springs, stagger } from "../motion/tokens";
 
 const features = [
   {
@@ -64,13 +64,12 @@ export function Features() {
         One place to fetch YouTube media, keep a queue, and find it later.
       </motion.p>
       <motion.div
-        variants={staggerFast}
+        variants={item}
         className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {features.map((feature) => (
           <motion.article
             key={feature.title}
-            variants={item}
             whileHover={{ y: -3 }}
             transition={springs.snappy}
             className="feature-card glass"

@@ -196,7 +196,15 @@ body {
   background: color-mix(in oklab, var(--color-primary) 72%, var(--color-base-300));
   color: var(--color-primary-content);
   border-color: transparent;
-  opacity: 0.78;
+  opacity: 0.85;
+}
+
+[data-theme="vidora-light"] .btn-primary:disabled,
+[data-theme="vidora-light"] .btn-primary[disabled] {
+  background: color-mix(in oklab, var(--color-primary) 18%, var(--color-base-100));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklab, var(--color-primary) 28%, transparent);
+  opacity: 1;
 }
 
 .site-header {

@@ -54,7 +54,7 @@ export function Hero() {
       variants={stagger}
       initial="initial"
       animate="animate"
-      className="mx-auto grid min-h-[auto] max-w-6xl items-center gap-10 px-5 pb-16 pt-8 sm:px-6 lg:min-h-[calc(100svh-5.75rem)] lg:grid-cols-[minmax(0,1.08fr)_minmax(18rem,0.92fr)] lg:gap-16 lg:pb-20 lg:pt-4"
+      className="mx-auto grid min-h-[auto] max-w-6xl items-center gap-10 px-5 pb-16 pt-6 sm:px-6 sm:pt-8 lg:min-h-[calc(100svh-5.75rem)] lg:grid-cols-[minmax(0,1.08fr)_minmax(18rem,0.92fr)] lg:gap-16 lg:pb-20 lg:pt-4"
     >
       <div>
         <motion.p

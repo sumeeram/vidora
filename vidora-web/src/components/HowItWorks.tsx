@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { inView, item, springs, stagger, staggerFast } from "../motion/tokens";
+import { inView, item, springs, stagger } from "../motion/tokens";
 
 const steps = [
   { n: "01", title: "Paste", body: "Drop in a video, playlist, or channel link." },
@@ -32,34 +32,35 @@ export function HowItWorks() {
       <motion.p variants={item} className="mt-3 text-base-content/70">
         Paste, pick a format, download.
       </motion.p>
-      <motion.div
-        variants={staggerFast}
-        className="relative mt-12 grid gap-4 md:grid-cols-3 md:gap-5"
-      >
+      <div className="relative mt-12">
         <div
           aria-hidden
-          className="pointer-events-none absolute top-[2.35rem] right-[12%] left-[12%] hidden h-px bg-gradient-to-r from-transparent via-primary/35 to-transparent md:block"
+          className="pointer-events-none absolute top-10 right-[14%] left-[14%] hidden h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent md:block"
         />
-        {steps.map((step) => (
-          <motion.article
-            key={step.n}
-            variants={item}
-            whileHover={{ y: -3 }}
-            transition={springs.snappy}
-            className="step-card glass relative"
-          >
-            <p className="font-display text-sm tracking-[0.2em] text-primary">
-              {step.n}
-            </p>
-            <h3 className="mt-4 font-display text-2xl tracking-tight">
-              {step.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-base-content/70">
-              {step.body}
-            </p>
-          </motion.article>
-        ))}
-      </motion.div>
+        <motion.div
+          variants={item}
+          className="grid gap-4 md:grid-cols-3 md:gap-5"
+        >
+          {steps.map((step) => (
+            <motion.article
+              key={step.n}
+              whileHover={{ y: -3 }}
+              transition={springs.snappy}
+              className="step-card glass relative"
+            >
+              <p className="font-display text-sm tracking-[0.2em] text-primary">
+                {step.n}
+              </p>
+              <h3 className="mt-4 font-display text-2xl tracking-tight">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-base-content/70">
+                {step.body}
+              </p>
+            </motion.article>
+          ))}
+        </motion.div>
+      </div>
     </motion.section>
   );
 }

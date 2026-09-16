@@ -95,42 +95,40 @@ export function Navbar() {
             How it works
           </a>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="relative md:hidden" ref={menuRef}>
-            <motion.button
-              type="button"
-              whileTap={{ scale: 0.96 }}
-              transition={springs.snappy}
-              className="btn btn-ghost btn-sm btn-circle"
-              aria-label="Open menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <Menu size={16} />
-            </motion.button>
-            {menuOpen ? (
-              <ul className="glass absolute right-0 z-50 mt-2 w-44 rounded-2xl p-2 text-sm shadow-lg">
-                <li>
-                  <a
-                    href="#features"
-                    className="block rounded-xl px-3 py-2 nav-link"
-                    onClick={closeMenu}
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#how"
-                    className="block rounded-xl px-3 py-2 nav-link"
-                    onClick={closeMenu}
-                  >
-                    How it works
-                  </a>
-                </li>
-              </ul>
-            ) : null}
-          </div>
+        <div className="relative flex items-center gap-1.5 sm:gap-2" ref={menuRef}>
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.96 }}
+            transition={springs.snappy}
+            className="btn btn-ghost btn-sm btn-circle md:hidden"
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <Menu size={16} />
+          </motion.button>
+          {menuOpen ? (
+            <ul className="glass absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl p-2 text-sm shadow-lg md:hidden">
+              <li>
+                <a
+                  href="#features"
+                  className="nav-link block rounded-xl px-3 py-2"
+                  onClick={closeMenu}
+                >
+                  Features
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#how"
+                  className="nav-link block rounded-xl px-3 py-2"
+                  onClick={closeMenu}
+                >
+                  How it works
+                </a>
+              </li>
+            </ul>
+          ) : null}
           <motion.button
             type="button"
             whileTap={{ scale: 0.96 }}
