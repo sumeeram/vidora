@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
-import { useState } from "react";
 import { FolderOpen, TriangleAlert } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { EmptyState } from "../components/EmptyState";
@@ -30,7 +28,9 @@ export default function SettingsPage() {
   const [appUpdateMessage, setAppUpdateMessage] = useState(
     "Vidora can install newer GitHub Releases automatically.",
   );
-  const [appUpdateProgress, setAppUpdateProgress] = useState<number | null>(null);
+  const [appUpdateProgress, setAppUpdateProgress] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     void getAppVersion().then((version) => {
@@ -103,7 +103,9 @@ export default function SettingsPage() {
   async function installApp() {
     if (!appUpdate) return;
     setAppUpdateBusy(true);
-    setAppUpdateMessage("Downloading update… Vidora will restart when it is ready.");
+    setAppUpdateMessage(
+      "Downloading update… Vidora will restart when it is ready.",
+    );
     try {
       await installAppUpdate(appUpdate, (progress) => {
         setAppUpdateProgress(progress.percent);
@@ -117,7 +119,10 @@ export default function SettingsPage() {
 
   return (
     <section className="max-w-2xl space-y-6">
-      <PageHeader title="Settings" description="Keep Vidora quiet, fast, and in the right folder." />
+      <PageHeader
+        title="Settings"
+        description="Keep Vidora quiet, fast, and in the right folder."
+      />
 
       {sidecar && !sidecar.ready ? (
         <EmptyState
@@ -133,11 +138,18 @@ export default function SettingsPage() {
         <div className="flex w-full flex-col gap-2">
           <span className="text-sm">Output folder</span>
           <div className="flex w-full flex-wrap gap-2">
-            <input className="input input-bordered min-w-0 flex-1" value={settings.outputDir} readOnly />
+            <input
+              className="input input-bordered min-w-0 flex-1"
+              value={settings.outputDir}
+              readOnly
+            />
             <button className="btn" onClick={() => void pickFolder()}>
               Browse
             </button>
-            <button className="btn btn-ghost gap-2" onClick={() => void openFolder()}>
+            <button
+              className="btn btn-ghost gap-2"
+              onClick={() => void openFolder()}
+            >
               <FolderOpen size={16} />
               Open
             </button>
@@ -145,14 +157,18 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex w-full flex-col gap-2">
-          <span className="text-sm">Concurrent downloads ({settings.concurrency})</span>
+          <span className="text-sm">
+            Concurrent downloads ({settings.concurrency})
+          </span>
           <input
             type="range"
             min={1}
             max={4}
             value={settings.concurrency}
             className="range range-primary w-full"
-            onChange={(e) => void patch({ concurrency: Number(e.target.value) })}
+            onChange={(e) =>
+              void patch({ concurrency: Number(e.target.value) })
+            }
           />
         </div>
 
@@ -253,11 +269,25 @@ export default function SettingsPage() {
 
       <div className="glass rounded-box p-5">
         <p className="font-display">yt-dlp engine</p>
-        <p className="mt-1 text-sm opacity-60">{sidecar?.message ?? "Checking…"}</p>
-        <button className="btn btn-primary btn-sm mt-4" disabled={busy} onClick={() => void updateEngine()}>
-          {busy ? <span className="loading loading-spinner loading-xs" /> : "Update yt-dlp"}
+        <p className="mt-1 text-sm opacity-60">
+          {sidecar?.message ?? "Checking…"}
+        </p>
+        <button
+          className="btn btn-primary btn-sm mt-4"
+          disabled={busy}
+          onClick={() => void updateEngine()}
+        >
+          {busy ? (
+            <span className="loading loading-spinner loading-xs" />
+          ) : (
+            "Update yt-dlp"
+          )}
         </button>
-        {updateLog ? <pre className="mt-3 whitespace-pre-wrap text-xs opacity-70">{updateLog}</pre> : null}
+        {updateLog ? (
+          <pre className="mt-3 whitespace-pre-wrap text-xs opacity-70">
+            {updateLog}
+          </pre>
+        ) : null}
       </div>
     </section>
   );
