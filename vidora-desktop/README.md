@@ -34,6 +34,36 @@ Installers land in `src-tauri/target/release/bundle/`.
 
 `tauri dev` and unsigned `tauri build` do not need signing keys. Updater artifacts are created only in CI (see `src-tauri/tauri.ci.conf.json`).
 
+## Windows installer UI
+
+NSIS (`*-setup.exe`) is the branded installer. The wizard uses custom header/sidebar bitmaps, the Vidora icon, Welcome/Finish copy, and a **Launch Vidora** checkbox on the finish page. Installation is **current user** (no Administrator prompt); the directory page is still shown so you can pick a folder. Start Menu and desktop shortcuts are named **Vidora** (no extra Start Menu folder).
+
+MSI stays on the WiX template, with matching banner/dialog bitmaps.
+
+Assets in `src-tauri/installer/` (24-bit BMP, sizes required by Tauri / NSIS MUI / WiX):
+
+| File | Size | Used for |
+| --- | --- | --- |
+| `header.bmp` | 150×57 | NSIS inner-page header (left) |
+| `sidebar.bmp` | 164×314 | NSIS Welcome and Finish sidebar |
+| `installer.ico` | multi-size ICO | Installer and uninstaller window icon |
+| `hooks.nsh` | — | Welcome / Finish strings via `bundle.windows.nsis.installerHooks` |
+| `wix-banner.bmp` | 493×58 | MSI inner-page banner |
+| `wix-dialog.bmp` | 493×312 | MSI first-page dialog (branded left column) |
+
+PNG siblings (`header.png`, `sidebar.png`, …) are previews only; Tauri reads the BMPs.
+
+Regenerate after icon or brand-color changes (Pillow required):
+
+```bash
+python3 -m pip install pillow
+python3 scripts/generate-nsis-assets.py
+```
+
+The script copies `src-tauri/icons/icon.ico` to `src-tauri/installer/installer.ico`. Wired in `src-tauri/tauri.conf.json` under `bundle.windows.nsis` and `bundle.windows.wix`.
+
+**Visual verification** needs a full Windows build (`npm run setup` then `npm run tauri build`). Open the NSIS `*-setup.exe` and walk Welcome → folder → install → Finish (confirm **Launch Vidora** and the desktop-shortcut checkbox). A Linux environment can regenerate assets and validate config, but cannot render the NSIS wizard.
+
 To produce signed updater artifacts locally (same as CI):
 
 ```powershell

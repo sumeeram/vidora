@@ -20,6 +20,10 @@ src-tauri/gen
 # Updater signing private keys — never commit
 *.key
 
+# Python asset generator
+scripts/__pycache__/
+*.pyc
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

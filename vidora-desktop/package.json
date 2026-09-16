@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "setup": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-sidecars.ps1"
+    "setup": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/setup-sidecars.ps1",
+    "generate-installer-assets": "python3 scripts/generate-nsis-assets.py"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
