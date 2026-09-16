@@ -4,10 +4,15 @@ export const springs = {
 };
 
 export const stagger = {
-  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.06 } },
+  animate: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
 };
 
 export const item = {
-  initial: { opacity: 0, y: 12 },
+  initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0, transition: springs.soft },
 };
+
+export const inView = {
+  once: true,
+  amount: 0.18,
+} as const;

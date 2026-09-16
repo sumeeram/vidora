@@ -1,6 +1,6 @@
 import { Clipboard, Clapperboard, FolderLock, ListVideo, MoonStar, Music } from "lucide-react";
 import { motion } from "motion/react";
-import { item, stagger } from "../motion/tokens";
+import { inView, item, springs, stagger } from "../motion/tokens";
 
 const features = [
   {
@@ -42,24 +42,50 @@ export function Features() {
       variants={stagger}
       initial="initial"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.25 }}
-      className="mx-auto max-w-5xl px-6 py-24"
+      viewport={inView}
+      className="mx-auto max-w-6xl px-5 py-20 sm:px-6 md:py-28"
     >
-      <motion.h2 variants={item} className="font-display text-4xl tracking-tight">
+      <motion.p
+        variants={item}
+        className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+      >
+        Features
+      </motion.p>
+      <motion.h2
+        variants={item}
+        className="mt-3 max-w-3xl font-display text-3xl tracking-tight sm:text-4xl"
+      >
         Built for the download, not the dashboard.
       </motion.h2>
-      <motion.p variants={item} className="mt-3 max-w-xl opacity-65">
+      <motion.p
+        variants={item}
+        className="mt-3 max-w-xl text-base-content/70"
+      >
         One place to fetch YouTube media, keep a queue, and find it later.
       </motion.p>
-      <div className="mt-14 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.div
+        variants={item}
+        className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {features.map((feature) => (
-          <motion.article key={feature.title} variants={item}>
-            <feature.icon size={20} className="text-primary" />
-            <h3 className="mt-4 font-display text-lg">{feature.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed opacity-65">{feature.body}</p>
+          <motion.article
+            key={feature.title}
+            whileHover={{ y: -3 }}
+            transition={springs.snappy}
+            className="feature-card glass"
+          >
+            <div className="icon-well">
+              <feature.icon size={18} strokeWidth={1.8} />
+            </div>
+            <h3 className="mt-4 font-display text-lg tracking-tight">
+              {feature.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-base-content/70">
+              {feature.body}
+            </p>
           </motion.article>
         ))}
-      </div>
+      </motion.div>
     </motion.section>
   );
 }

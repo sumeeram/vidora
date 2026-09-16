@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10262b"/>
+      <stop offset="100%" stop-color="#0c1a1d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="18%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="86" y="215" width="88" height="88" rx="26" fill="#5eead4"/>
+  <path d="M118 241.5L146 259L118 276.5V241.5Z" fill="#0b2422"/>
+  <text x="196" y="278" fill="#eef6f4" font-family="Sora, Manrope, Arial, sans-serif" font-size="92" font-weight="700">Vidora</text>
+  <text x="86" y="370" fill="#c5ddd8" font-family="Manrope, Arial, sans-serif" font-size="36">Save any YouTube video, any format.</text>
+  <text x="86" y="430" fill="#7dcdc0" font-family="Manrope, Arial, sans-serif" font-size="22" letter-spacing="3">WINDOWS · FREE · LOCAL-FIRST</text>
+</svg>

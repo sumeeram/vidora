@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { item, stagger } from "../motion/tokens";
+import { inView, item, springs, stagger } from "../motion/tokens";
 
 const steps = [
   { n: "01", title: "Paste", body: "Drop in a video, playlist, or channel link." },
@@ -14,23 +14,52 @@ export function HowItWorks() {
       variants={stagger}
       initial="initial"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.3 }}
-      className="mx-auto max-w-5xl px-6 py-24"
+      viewport={inView}
+      className="mx-auto max-w-6xl px-5 py-20 sm:px-6 md:py-28"
     >
-      <motion.h2 variants={item} className="font-display text-4xl tracking-tight">
+      <motion.p
+        variants={item}
+        className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+      >
+        How it works
+      </motion.p>
+      <motion.h2
+        variants={item}
+        className="mt-3 font-display text-3xl tracking-tight sm:text-4xl"
+      >
         Three steps.
       </motion.h2>
-      <motion.p variants={item} className="mt-3 opacity-65">
+      <motion.p variants={item} className="mt-3 text-base-content/70">
         Paste, pick a format, download.
       </motion.p>
-      <div className="mt-14 grid gap-10 md:grid-cols-3">
-        {steps.map((step) => (
-          <motion.article key={step.n} variants={item}>
-            <p className="font-display text-sm tracking-[0.2em] text-primary">{step.n}</p>
-            <h3 className="mt-3 font-display text-2xl">{step.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed opacity-65">{step.body}</p>
-          </motion.article>
-        ))}
+      <div className="relative mt-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-10 right-[14%] left-[14%] hidden h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent md:block"
+        />
+        <motion.div
+          variants={item}
+          className="grid gap-4 md:grid-cols-3 md:gap-5"
+        >
+          {steps.map((step) => (
+            <motion.article
+              key={step.n}
+              whileHover={{ y: -3 }}
+              transition={springs.snappy}
+              className="step-card glass relative"
+            >
+              <p className="font-display text-sm tracking-[0.2em] text-primary">
+                {step.n}
+              </p>
+              <h3 className="mt-4 font-display text-2xl tracking-tight">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-base-content/70">
+                {step.body}
+              </p>
+            </motion.article>
+          ))}
+        </motion.div>
       </div>
     </motion.section>
   );
